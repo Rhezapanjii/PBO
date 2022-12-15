@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Yajra\DataTables\DataTables;
 
 
 class UserController extends Controller
@@ -12,13 +13,25 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
-        return view('users.index', [
-            'users' => $users
-        ]);
+        
+        if ($request->ajax()) {
+            $data = User::latest()->get();
+            return Datatables::of($data)
+                // ->addIndexColumn()
+                ->addColumn('action', function($row){
+                $html = '<a href='. route('users.edit', $row) . ' class="btn btn-info btn-m ml-3">Edit</a>';
+                $html .= '<a href='. route('users.destroy', $row) . ' class="btn btn-danger btn-m ml-1" onclick="notificationBeforeDelete(event, this)">Delete</a>';
+                return $html;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('users.index');
+
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -112,5 +125,12 @@ public function update(Request $request, $id)
     return redirect()->route('users.index')
         ->with('success_message', 'Berhasil menghapus user');
 }
+    function userpdf()
+    {
+        dd('hai');
+        $user = User::all();
+        $pdf = \PDF::loadView('userpdf', ['users' => $user]);
+        return $pdf -> download('Data User.pdf');
+    }
 
 }

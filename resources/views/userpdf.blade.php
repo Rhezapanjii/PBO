@@ -16,21 +16,18 @@
     <table class="table table-bordered yajra-datatable" id="yajra-datatable">
         <thead>
             <tr>
-                <th>No.</th>
-                <th>Nama Barang</th>
-                <th>Jumlah Barang</th>
-                <th>Harga Barang</th>
-                <th>Tanggal Kadaluarsa</th>
+            <th>No.</th>
+            <th>Nama</th>
+            <th>Email</th>
+            <th>Opsi</th>
             </tr>
         </thead>
         <tbody>
-        @foreach($barang as $key => $barang)
+        @foreach($user as $key => $user)
                             <tr>
-                                <td>{{$key+1}}</td>
-                                <td>{{$barang->nama}}</td>
-                                <td>{{$barang->jumlah}}</td>
-                                <td>{{$barang->harga}}</td>
-                                <td>{{$barang->tanggalKadaluarsa}}</td>
+                            <td>{{$key+1}}</td>
+                                <td>{{$user->name}}</td>
+                                <td>{{$user->email}}</td>
                                 
                             </tr>
                         @endforeach

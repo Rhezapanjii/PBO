@@ -1,35 +1,49 @@
 <!DOCTYPE html>
+@extends('adminlte::page')
+@section('title', 'List Barang')
+@section('content_header')
+@stop
+@section('content')
 <html>
 <head>
-    <title>Laravel 8|7 Datatables Tutorial</title>
+    <title>Data Barang</title>
+    
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"/>
     <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet">
 </head>
 <body>
-    
+
 <div class="container mt-5">
-    <h2 class="mb-4">Laravel 7|8 Yajra Datatables Example</h2>
-    <table class="table table-bordered yajra-datatable"id=".yajra-datatable">
+    <h2 class="mb-4">List Barang</h2>
+    <table class="table table-bordered yajra-datatable" id="yajra-datatable">
         <thead>
             <tr>
-                <th>No</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Username</th>
-                <th>Phone</th>
-                <th>DOB</th>
-                <th>Action</th>
+            <a href="{{route('barang.create')}}" class="btn btn-primary mb-2">
+                        Tambah
+                    </a>
+            <a href="/barang/cetakpdf" class="btn btn-primary mb-2 ml-3">
+                        Cetak PDF
+                    </a>
+                <th>No.</th>
+                <th>Nama Barang</th>
+                <th>Jumlah Barang</th>
+                <th>Harga Barang</th>
+                <th>Tanggal Kadaluarsa</th>
+                <th>Opsi</th>
             </tr>
         </thead>
         <tbody>
         </tbody>
     </table>
 </div>
-   @stop
-
+   <form action="" id="delete-form" method="post">
+        @method('delete')
+        @csrf
+    </form>
 </body>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
@@ -38,17 +52,18 @@
 <script type="text/javascript">
   $(function () {
     
-    var table = $('.yajra-datatable').DataTable({
+    var table = $('#yajra-datatable').DataTable({
         processing: true,
         serverSide: true,
         ajax: "{{ route('barang.index') }}",
         columns: [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            {data: 'name', name: 'name'},
-            {data: 'email', name: 'email'},
-            {data: 'username', name: 'username'},
-            {data: 'phone', name: 'phone'},
-            {data: 'dob', name: 'dob'},
+            {data: 'no', name: 'no', render: function (data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                    }, width: '5%', class: 'text-center'},
+            {data: 'nama', name: 'nama'},
+            {data: 'jumlah', name: 'jumlah'},
+            {data: 'harga', name: 'harga'},
+            {data: 'tanggalKadaluarsa', name: 'tanggalKadaluarsa'},
             {
                 data: 'action', 
                 name: 'action', 
@@ -59,30 +74,12 @@
     });
     
   });
-</script>
-</html>
-    <form action="" id="delete-form" method="post">
-        @method('delete')
-        @csrf
-    </form>
-    <script>
-        $('#example2').DataTable({
-            "responsive": true,
-        });
-        function notificationBeforeDelete(event, el) {
+  function notificationBeforeDelete(event, el) {
             event.preventDefault();
             if (confirm('Apakah anda yakin akan menghapus data ? ')) {
                 $("#delete-form").attr('action', $(el).attr('href'));
                 $("#delete-form").submit();
-            },
+            }
         }
-    //     public function cetakpdf()
-    // {
-    // 	$barang = barang::all();
- 
-    // 	$pdf = PDF::loadview('barang_pdf',['barang'=>$barang]);
-    // 	return $pdf->download('laporan-barang-pdf');
-    // }
-
-    </script>
-@endpush
+</script>
+</html>

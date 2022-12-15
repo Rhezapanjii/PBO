@@ -1,7 +1,6 @@
 <?php
 namespace App\Http\Controller;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\BarangController;
@@ -35,6 +34,7 @@ Route::get('/home', function() {
 
 Auth::routes();
 
+Route::get('kirim-email','App\Http\Controllers\MailController@index');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Auth::routes();
@@ -44,6 +44,7 @@ Route::get('/home', function() {
 })->name('home')->middleware('auth');
 
 
+Route::get('/users/userpdf', [\App\Http\Controllers\UserController::class, 'userpdf']);
 
 Route::resource('users', \App\Http\Controllers\UserController::class)
     ->middleware('auth');

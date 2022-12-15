@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Barang;
+use Yajra\DataTables\DataTables;
 
 class BarangController extends Controller
 {
@@ -14,13 +15,15 @@ class BarangController extends Controller
      */
     public function index(Request $request)
     {
+        
         if ($request->ajax()) {
-            $data = Student::latest()->get();
+            $data = Barang::latest()->get();
             return Datatables::of($data)
-                ->addIndexColumn()
+                // ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a> <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
-                    return $actionBtn;
+                $html = '<a href='. route('barang.edit', $row) . ' class="btn btn-info btn-m ml-3">Edit</a>';
+                $html .= '<a href='. route('barang.destroy', $row) . ' class="btn btn-danger btn-m ml-1" onclick="notificationBeforeDelete(event, this)">Delete</a>';
+                return $html;
                 })
                 ->rawColumns(['action'])
                 ->make(true);
@@ -130,22 +133,23 @@ class BarangController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    
+    public function destroy(Request $request, $id)
     {
-        //
-        $barang = Barang::find($id);
-        $barang->is_delete =1;
-        $barang->save();
+        $barang = barang::find($id);
+        if ($barang) $barang->delete();
     return redirect()->route('barang.index')
         ->with('success_message', 'Berhasil menghapus barang');
     }
+
+    
     
 
     function cetakpdf()
     {
         $barang = Barang::all();
         $pdf = \PDF::loadView('cetakpdf', ['barang' => $barang]);
-        return $pdf -> download('laporan.pdf');
+        return $pdf -> download('laporan Barang.pdf');
     }
 
 }
